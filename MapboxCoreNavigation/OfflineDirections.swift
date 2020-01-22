@@ -160,7 +160,7 @@ public class NavigationDirections: Directions {
             let tilePath = filePathURL.path
             let outputPath = outputDirectoryURL.path
             
-            let numberOfTiles = Navigator().unpackTiles(forPacked_tiles_path: tilePath, output_directory: outputPath)
+            let numberOfTiles = Navigator().unpackTiles(forPackedTilesPath: tilePath, outputDirectory: outputPath)
             
             // Report 100% progress
             progressHandler?(totalPackedBytes, totalPackedBytes)
