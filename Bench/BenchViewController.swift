@@ -33,12 +33,22 @@ class BenchViewController: UITableViewController {
         super.viewDidLoad()
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-        
+
+        let firstRouteOptions = NavigationRouteOptions(coordinates: [
+            CLLocationCoordinate2D(latitude: 38.853108, longitude: -77.043331),
+            CLLocationCoordinate2D(latitude: 38.910736, longitude: -76.966906),
+        ])
+        let route = Fixture.route(from: "DCA-Arboretum", options: firstRouteOptions)
         let controlRoute1 = Item(name: "DCA to Arboretum",
-                                 route: Fixture.route(from: "DCA-Arboretum"))
-        
+                                 route: route)
+
+        let secondRouteOptions =  NavigationRouteOptions(coordinates: [
+                   CLLocationCoordinate2D(latitude: 42.361634, longitude: -71.12852),
+                   CLLocationCoordinate2D(latitude: 42.352396, longitude: -71.068719),
+        ])
+        let secondRoute = Fixture.route(from: "PipeFittersUnion-FourSeasonsBoston", options: secondRouteOptions)
         let controlRoute2 = Item(name: "Pipe Fitters Union to Four Seasons Boston",
-                                 route: Fixture.route(from: "PipeFittersUnion-FourSeasonsBoston"))
+                                 route: secondRoute)
         
         let section = Section(title: "Control Routes", items: [controlRoute1, controlRoute2])
         
@@ -77,9 +87,11 @@ class BenchViewController: UITableViewController {
         
         let item = dataSource[indexPath.section].items[indexPath.row]
         
-        guard let route = item.route else { return }
+        guard let route = item.route, let destinationWaypoint = route.legs.last?.destination else { return }
+
+        let routeOptions = RouteOptions(waypoints: [destinationWaypoint])
         
-        let viewController = ControlRouteViewController(for: route)
+        let viewController = ControlRouteViewController(for: route, routeOptions: routeOptions)
         viewController.delegate = self
         navigationController?.pushViewController(viewController, animated: true)
     }
