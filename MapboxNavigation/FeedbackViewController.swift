@@ -146,7 +146,7 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
         self.modalPresentationStyle = .custom
         self.transitioningDelegate = self
         
-        self.uuid()
+        self.feedbackEventUUID()
     }
     
     override public func viewDidLoad() {
@@ -226,7 +226,7 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
     }
     
     func send(_ item: FeedbackItem) {
-        if let uuid = self.uuid() {
+        if let uuid = self.feedbackEventUUID() {
             delegate?.feedbackViewController(self, didSend: item, uuid: uuid)
             eventsManager?.updateFeedback(uuid: uuid, type: item.feedbackType, source: .user, description: nil)
         }
@@ -243,13 +243,13 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
     
     func dismissFeedbackItem() {
         delegate?.feedbackViewControllerDidCancel(self)
-        if let uuid = self.uuid() {
+        if let uuid = self.feedbackEventUUID() {
             eventsManager?.cancelFeedback(uuid: uuid)
         }
         dismiss(animated: true, completion: nil)
     }
     
-    @discardableResult private func uuid() -> UUID? {
+    @discardableResult private func feedbackEventUUID() -> UUID? {
         return eventsManager?.recordFeedback()
     }
 }
