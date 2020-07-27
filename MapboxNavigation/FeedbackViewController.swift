@@ -259,9 +259,9 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
 
     /**
      Gets an unique identifier used to identify the current feedback event.
-     
-     The UUID method returns is a side-effect of calling `NavigationEventsManager.recordFeedback()`.
-     
+
+     The UUID method returns is the result of calling `NavigationEventsManager.recordFeedback()`.
+
      - Returns: UUID used to identify the current feedback event.
      */
     @discardableResult private func feedbackEventUUID() -> UUID? {
