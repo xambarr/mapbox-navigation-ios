@@ -299,9 +299,10 @@ open class NavigationEventsManager {
      
      You can pair this with a custom feedback UI in your app to flag problems during navigation such as road closures, incorrect instructions, etc.
      
-     @param type A `FeedbackType` used to specify the type of feedback
-     @param description A custom string used to describe the problem in detail.
-     @return Returns a UUID used to identify the feedback event
+     - Parameter type: A `FeedbackType` used to specify the type of feedback
+     - Parameter description: A custom string used to describe the problem in detail.
+     
+     - Returns: a UUID used to identify the feedback event
      
      If you provide a custom feedback UI that lets users elaborate on an issue, you should call this before you show the custom UI so the location and timestamp are more accurate.
      
