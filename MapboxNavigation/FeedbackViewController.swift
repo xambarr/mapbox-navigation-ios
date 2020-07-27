@@ -146,7 +146,7 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
         self.modalPresentationStyle = .custom
         self.transitioningDelegate = self
 
-        self.feedbackEventUUID()
+        self.currentFeedbackEventID()
     }
     
     override public func viewDidLoad() {
@@ -226,12 +226,12 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
     }
 
     /**
-     Sends the feedback event for the specific feedback item.
+     Sends the current feedback event for the specific feedback item.
 
-     - Parameter item: feedback item for which feedback will be sent.
+     - Parameter item: a feedback item for which feedback will be sent.
      */
     func send(_ item: FeedbackItem) {
-        if let uuid = self.feedbackEventUUID() {
+        if let uuid = self.currentFeedbackEventID() {
             delegate?.feedbackViewController(self, didSend: item, uuid: uuid)
             eventsManager?.updateFeedback(uuid: uuid, type: item.feedbackType, source: .user, description: nil)
         }
@@ -247,11 +247,11 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
     }
 
     /**
-     Cancels sending the feedback event.
+     Cancels sending the current feedback event.
      */
     func dismissFeedbackItem() {
         delegate?.feedbackViewControllerDidCancel(self)
-        if let uuid = self.feedbackEventUUID() {
+        if let uuid = self.currentFeedbackEventID() {
             eventsManager?.cancelFeedback(uuid: uuid)
         }
         dismiss(animated: true, completion: nil)
@@ -260,11 +260,11 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
     /**
      Gets an unique identifier used to identify the current feedback event.
 
-     The UUID method returns is the result of calling `NavigationEventsManager.recordFeedback()`.
+     The UUID that method returns is the result of calling `NavigationEventsManager.recordFeedback()`.
 
      - Returns: UUID used to identify the current feedback event.
      */
-    @discardableResult private func feedbackEventUUID() -> UUID? {
+    @discardableResult private func currentFeedbackEventID() -> UUID? {
         return eventsManager?.recordFeedback()
     }
 }
