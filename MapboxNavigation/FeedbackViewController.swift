@@ -145,7 +145,7 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
     func commonInit() {
         self.modalPresentationStyle = .custom
         self.transitioningDelegate = self
-        
+
         self.feedbackEventUUID()
     }
     
@@ -224,7 +224,12 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
         
         NSLayoutConstraint.activate(constraints)
     }
-    
+
+    /**
+     Sends the feedback event for the specific feedback item.
+
+     - Parameter item: feedback item for which feedback will be sent.
+     */
     func send(_ item: FeedbackItem) {
         if let uuid = self.feedbackEventUUID() {
             delegate?.feedbackViewController(self, didSend: item, uuid: uuid)
@@ -235,12 +240,15 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
             dismiss(animated: true)
             return
         }
-        
+
         dismiss(animated: true) {
             DialogViewController().present(on: parent)
         }
     }
-    
+
+    /**
+     Cancels sending the feedback event.
+     */
     func dismissFeedbackItem() {
         delegate?.feedbackViewControllerDidCancel(self)
         if let uuid = self.feedbackEventUUID() {
@@ -248,7 +256,7 @@ public class FeedbackViewController: UIViewController, DismissDraggable, UIGestu
         }
         dismiss(animated: true, completion: nil)
     }
-    
+
     /**
      Gets an unique identifier used to identify the current feedback event.
      
