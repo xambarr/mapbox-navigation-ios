@@ -7,7 +7,7 @@ commands:
         type: string
     steps:
       - save_cache:
-          key: nav-api-diff-cache-v5-{{ .Environment.CIRCLE_JOB }}-<< parameters.api_diff_cache >>
+          key: nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-<< parameters.api_diff_cache >>
           paths:
             - << pipeline.parameters.api_log_file >>
 
@@ -18,7 +18,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - nav-api-diff-cache-v5-{{ .Environment.CIRCLE_JOB }}-<< parameters.api_diff_cache >>
+            - nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-<< parameters.api_diff_cache >>
 
   run_api_log:
     parameters:
@@ -251,7 +251,7 @@ jobs:
                 iOS: << parameters.iOS >>
                 device: << parameters.device >>
             - save-api-diff-cache:
-                api_diff_cache: $CIRCLE_SHA1
+                api_diff_cache: .Environment.CIRCLE_SHA1
 
   xcode-11-examples:
     parameters:
@@ -308,7 +308,7 @@ jobs:
           name: Checking out Base API
           command: git checkout << parameters.base_api_tag >>
       - restore-api-diff-cache:
-          api_diff_cache: $CIRCLE_SHA1
+          api_diff_cache: .Environment.CIRCLE_SHA1
       - run:
           name: Move Api Diff
           command: mv << pipeline.parameters.api_log_file >> original_api
