@@ -363,16 +363,18 @@ jobs:
                 api_diff_cache: << parameters.base_api_tag >>
       - run:
           name: Restore latest APIDiffReport
-          command: cp -R ~/APIDiffReport scripts/.
+          command: |
+            rm -rf scripts/APIDiffReport
+            cp -R ~/APIDiffReport scripts/.
       - run_api_log:
           iOS: << parameters.iOS >>
           device: << parameters.device >>
       - run:
           name: Generating MapboxCoreNavigation API Diff
-          command: cd scripts/APIDiffReport && swift run APIDiffReport diff original_api/core_navigation_log.json $CIRCLE_WORKING_DIRECTORY/api_logs/core_navigation_log.json
+          command: cd scripts/APIDiffReport && swift run APIDiffReport diff $CIRCLE_WORKING_DIRECTORY/original_api/core_navigation_log.json $CIRCLE_WORKING_DIRECTORY/api_logs/core_navigation_log.json
       - run:
           name: Generating MapboxNavigation API Diff
-          command: cd scripts/APIDiffReport && swift run APIDiffReport diff original_api/navigation_log.json $CIRCLE_WORKING_DIRECTORY/api_logs/navigation_log.json      
+          command: cd scripts/APIDiffReport && swift run APIDiffReport diff $CIRCLE_WORKING_DIRECTORY/original_api/navigation_log.json $CIRCLE_WORKING_DIRECTORY/api_logs/navigation_log.json      
 
 workflows:
   workflow:
