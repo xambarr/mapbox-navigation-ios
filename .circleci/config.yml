@@ -32,7 +32,7 @@ commands:
   run_api_log:
     parameters:
       iOS:
-          type: string
+        type: string
       device:
         type: string
     steps:
@@ -250,6 +250,7 @@ jobs:
       - when:
           condition: << parameters.generate_api_log >>
           steps:
+            - build-api-diff-report
             - run_api_log:
                 iOS: << parameters.iOS >>
                 device: << parameters.device >>
@@ -307,6 +308,10 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
     steps:
       - checkout
+      - build-api-diff-report
+      - run:
+          name: Store latest APIDiffReport
+          command: cp -R scripts/APIDiffReport ~/.
       - run:
           name: Checking out Base API
           command: git checkout << parameters.base_api_tag >>
@@ -342,6 +347,9 @@ jobs:
             - *save-cache
             - save-api-diff-cache:
                 api_diff_cache: << parameters.base_api_tag >>
+      - run:
+          name: Restore latest APIDiffReport
+          command: cp -R ~/APIDiffReport scripts/.
       - run_api_log:
           iOS: << parameters.iOS >>
           device: << parameters.device >>
