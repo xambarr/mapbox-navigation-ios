@@ -9,7 +9,7 @@ commands:
       - save_cache:
           key: nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-{{ << parameters.api_diff_cache >> }}
           paths:
-            - << pipeline.parameters.api_log_file >>
+            - .Environment.CIRCLE_WORKING_DIRECTORY/api_logs
 
   restore-api-diff-cache:
     parameters:
@@ -35,10 +35,10 @@ commands:
           command: cd scripts/APIDiffReport && swift build 
       - run:
           name: Generating MapboxCoreNavigation API Log
-          command: cd scripts/APIDiffReport && swift run APIDiffReport log ../.. << pipeline.parameters.api_log_file >>/core_navigation_log.json doc --module-name MapboxCoreNavigation -- -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=<< parameters.iOS >>,name=<< parameters.device >>' -project MapboxNavigation.xcodeproj -scheme MapboxCoreNavigation clean build
+          command: cd scripts/APIDiffReport && swift run APIDiffReport log ../.. $CIRCLE_WORKING_DIRECTORY/api_logs/core_navigation_log.json doc --module-name MapboxCoreNavigation -- -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=<< parameters.iOS >>,name=<< parameters.device >>' -project MapboxNavigation.xcodeproj -scheme MapboxCoreNavigation clean build
       - run:
           name: Generating MapboxNavigation API Log
-          command: cd scripts/APIDiffReport && swift run APIDiffReport log ../.. << pipeline.parameters.api_log_file >>/navigation_log.json doc --module-name MapboxNavigation -- -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=<< parameters.iOS >>,name=<< parameters.device >>' -project MapboxNavigation.xcodeproj -scheme MapboxNavigation clean build
+          command: cd scripts/APIDiffReport && swift run APIDiffReport log ../.. $CIRCLE_WORKING_DIRECTORY/api_logs/navigation_log.json doc --module-name MapboxNavigation -- -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=<< parameters.iOS >>,name=<< parameters.device >>' -project MapboxNavigation.xcodeproj -scheme MapboxNavigation clean build
 
 step-library:
   - &restore-cache
@@ -311,13 +311,13 @@ jobs:
           api_diff_cache: .Environment.CIRCLE_SHA1
       - run:
           name: Move Api Diff
-          command: mv << pipeline.parameters.api_log_file >> original_api
+          command: mv $CIRCLE_WORKING_DIRECTORY/api_logs original_api
       - restore-api-diff-cache:
           api_diff_cache: << parameters.base_api_tag >>
       - run:
           name: Verify Base API report exists
           command: |
-            if test -f "<< pipeline.parameters.api_log_file >>"; then \
+            if test -f "$CIRCLE_WORKING_DIRECTORY/api_logs"; then \
               echo "Base API log file exists" \
               export API_CACHE_EXISTS=TRUE \
             fi
@@ -341,15 +341,10 @@ jobs:
           device: << parameters.device >>
       - run:
           name: Generating MapboxCoreNavigation API Diff
-          command: cd scripts/APIDiffReport && swift run APIDiffReport diff original_api/core_navigation_log.json << pipeline.parameters.api_log_file>>/core_navigation_log.json
+          command: cd scripts/APIDiffReport && swift run APIDiffReport diff original_api/core_navigation_log.json $CIRCLE_WORKING_DIRECTORY/api_logs/core_navigation_log.json
       - run:
           name: Generating MapboxNavigation API Diff
-          command: cd scripts/APIDiffReport && swift run APIDiffReport diff original_api/navigation_log.json << pipeline.parameters.api_log_file>>/navigation_log.json      
-
-parameters:
-  api_log_file:
-    type: string
-    default: .Environment.CIRCLE_WORKING_DIRECTORY/api_logs
+          command: cd scripts/APIDiffReport && swift run APIDiffReport diff original_api/navigation_log.json $CIRCLE_WORKING_DIRECTORY/api_logs/navigation_log.json      
 
 workflows:
   workflow:
