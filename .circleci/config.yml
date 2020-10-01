@@ -9,7 +9,7 @@ commands:
       - save_cache:
           key: nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-{{ << parameters.api_diff_cache >> }}
           paths:
-            - {{ << pipeline.parameters.api_log_file >> }}
+            - << pipeline.parameters.api_log_file >>
 
   restore-api-diff-cache:
     parameters:
