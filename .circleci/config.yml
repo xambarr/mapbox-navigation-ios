@@ -7,9 +7,9 @@ commands:
         type: string
     steps:
       - save_cache:
-          key: nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-<< parameters.api_diff_cache >>
+          key: nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-{{ << parameters.api_diff_cache >> }}
           paths:
-            - << pipeline.parameters.api_log_file >>
+            - {{ << pipeline.parameters.api_log_file >> }}
 
   restore-api-diff-cache:
     parameters:
@@ -18,7 +18,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-<< parameters.api_diff_cache >>
+            - nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-{{ << parameters.api_diff_cache >> }}
 
   run_api_log:
     parameters:
@@ -335,7 +335,7 @@ jobs:
                 command: if [ $(xcversion simulators | grep -cF "iOS << parameters.iOS >> Simulator (installed)") -eq 0 ]; then xcversion simulators --install="iOS << parameters.iOS >>" || true; fi
             - *save-cache
             - save-api-diff-cache:
-                api_diff_cache: << parameters.base_api_tag >>      
+                api_diff_cache: << parameters.base_api_tag >>
       - run_api_log:
           iOS: << parameters.iOS >>
           device: << parameters.device >>
@@ -349,7 +349,7 @@ jobs:
 parameters:
   api_log_file:
     type: string
-    default: $CIRCLE_WORKING_DIRECTORY/api_logs
+    default: .Environment.CIRCLE_WORKING_DIRECTORY/api_logs
 
 workflows:
   workflow:
