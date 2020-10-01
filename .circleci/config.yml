@@ -5,13 +5,11 @@ commands:
     parameters:
       api_diff_cache:
         type: string
-      cache_path:
-        type: string
     steps:
       - save_cache:
           key: nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-{{ << parameters.api_diff_cache >> }}
           paths:
-            - << parameters.cache_path >>
+            - api_logs
 
   restore-api-diff-cache:
     parameters:
@@ -254,7 +252,6 @@ jobs:
                 device: << parameters.device >>
             - save-api-diff-cache:
                 api_diff_cache: .Environment.CIRCLE_SHA1
-                cache_path: .Environment.CIRCLE_WORKING_DIRECTORY/api_logs
 
   xcode-11-examples:
     parameters:
@@ -339,7 +336,6 @@ jobs:
             - *save-cache
             - save-api-diff-cache:
                 api_diff_cache: << parameters.base_api_tag >>
-                cache_path: .Environment.CIRCLE_WORKING_DIRECTORY/api_logs
       - run_api_log:
           iOS: << parameters.iOS >>
           device: << parameters.device >>
