@@ -20,12 +20,7 @@ commands:
           keys:
             - nav-api-diff-cache-v5-{{ .Environment.CIRCLE_WORKFLOW_ID }}-{{ << parameters.api_diff_cache >> }}
 
-  run_api_log:
-    parameters:
-      iOS:
-          type: string
-      device:
-        type: string
+  build-api-diff-report:
     steps:
       - run:
           name: Install Sourcekitten
@@ -33,6 +28,14 @@ commands:
       - run:
           name: Building API Diff Report
           command: cd scripts/APIDiffReport && swift build 
+
+  run_api_log:
+    parameters:
+      iOS:
+          type: string
+      device:
+        type: string
+    steps:
       - run:
           name: Generating MapboxCoreNavigation API Log
           command: cd scripts/APIDiffReport && swift run APIDiffReport log ../.. $CIRCLE_WORKING_DIRECTORY/api_logs/core_navigation_log.json doc --module-name MapboxCoreNavigation -- -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=<< parameters.iOS >>,name=<< parameters.device >>' -project MapboxNavigation.xcodeproj -scheme MapboxCoreNavigation clean build
@@ -311,7 +314,10 @@ jobs:
           api_diff_cache: .Environment.CIRCLE_SHA1
       - run:
           name: Move Api Diff
-          command: mv $CIRCLE_WORKING_DIRECTORY/api_logs original_api
+          command: |
+            ls
+            ls api_logs/
+            mv $CIRCLE_WORKING_DIRECTORY/api_logs $CIRCLE_WORKING_DIRECTORY/original_api
       - restore-api-diff-cache:
           api_diff_cache: << parameters.base_api_tag >>
       - run:
