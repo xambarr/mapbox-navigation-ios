@@ -342,25 +342,18 @@ jobs:
             mv api_logs original_api
       - restore-api-diff-cache-by-tag:
           api_diff_cache: << parameters.base_api_tag >>
+      - *prepare-mapbox-file
+      - *prepare-netrc-file
+      - *update-carthage-version
+      - *restore-cache
+      - *install-dependencies
+      - *install-dependencies-12
       - run:
-          name: Verify Base API report exists
-          command: |
-            test -e "$CIRCLE_WORKING_DIRECTORY/api_logs" && echo "Base API log file exists" && export API_CACHE_EXISTS=TRUE || echo Base API log not found
-      - unless:
-          condition: .Environment.API_CACHE_EXISTS
-          steps:
-            - *prepare-mapbox-file
-            - *prepare-netrc-file
-            - *update-carthage-version
-            - *restore-cache
-            - *install-dependencies
-            - *install-dependencies-12
-            - run:
-                name: Install prerequisites
-                command: if [ $(xcversion simulators | grep -cF "iOS << parameters.iOS >> Simulator (installed)") -eq 0 ]; then xcversion simulators --install="iOS << parameters.iOS >>" || true; fi
-            - *save-cache
-            - save-api-diff-cache-by-tag:
-                api_diff_cache: << parameters.base_api_tag >>
+          name: Install prerequisites
+          command: if [ $(xcversion simulators | grep -cF "iOS << parameters.iOS >> Simulator (installed)") -eq 0 ]; then xcversion simulators --install="iOS << parameters.iOS >>" || true; fi
+      - *save-cache
+      - save-api-diff-cache-by-tag:
+          api_diff_cache: << parameters.base_api_tag >>
       - run:
           name: Restore latest APIDiffReport
           command: |
