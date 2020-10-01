@@ -320,10 +320,7 @@ jobs:
       - run:
           name: Move Api Diff
           command: |
-            pwd
-            ls
-            ls api_logs/
-            mv api_logs $CIRCLE_WORKING_DIRECTORY/original_api
+            mv api_logs original_api
       - restore-api-diff-cache:
           api_diff_cache: << parameters.base_api_tag >>
       - run:
