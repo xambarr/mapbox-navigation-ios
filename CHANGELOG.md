@@ -2,12 +2,26 @@
 
 ## v1.1.0
 
+### Packaging
+
+* MapboxNavigationNative dependency was updated to v22.0.5 and MapboxCommon to v7.1.2. ([#2648](https://github.com/mapbox/mapbox-navigation-ios/pull/2648))
+
+### Offline
+
+* Added Offline Service support for Maps and Navigation. To allow Mapbox Maps SDK to pick up downloaded regions, `OfflineService` has to be instantiated prior to `MGLMapView`. In case of offline navigation `MapboxNavigationService` and `PassiveLocationDataSource` has to contain `tilesVersion` parameter of downloaded Navigation region. Undeprecated `NavigationDirections`, `OfflineRouteCompletionHandler` and `NavigationDirections.calculate(_:offline:completionHandler:)` and introduced `NavigationDirections.configureRouter(tilesVersion:)` to be able to request route in offline. ([#2653](https://github.com/mapbox/mapbox-navigation-ios/pull/2653))
+
 ### Other changes
 
 * `RouteProgress`, `RouteLegProgress`, and `RouteStepProgress` now conform to the `Codable` protocol. ([#2615](https://github.com/mapbox/mapbox-navigation-ios/pull/2615))
 * Fixed an issue where `NavigationMapView` redrew at a low frame rate even when the device was plugged in. ([#2643](https://github.com/mapbox/mapbox-navigation-ios/pull/2643))
 * Fixed an issue where the route line flickered when refreshing. ([#2642](https://github.com/mapbox/mapbox-navigation-ios/pull/2642))
-* Fixed an issue where the End of route view UI is broken prior to iOS 11 . ([#2690](https://github.com/mapbox/mapbox-navigation-ios/pull/2690))
+* Fixed an issue where the End of route view UI is broken prior to iOS 11. ([#2690](https://github.com/mapbox/mapbox-navigation-ios/pull/2690))
+
+## v1.0.1
+
+### User location
+
+* Fixed issues which was causing unsmooth user puck updates on iOS and inability to zoom-in to current location at the start of navigation on CarPlay by updating to Mapbox Maps SDK for iOS v6.2.2. ([#2699](https://github.com/mapbox/mapbox-navigation-ios/pull/2699))
 
 ## v1.0.0
 
